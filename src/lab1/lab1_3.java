@@ -1,82 +1,58 @@
-class TimerThread extends Thread {
-    private volatile boolean running = true;
-
+class TimerTask implements Runnable {
     @Override
-    public void run() {
-        long startTime = System.currentTimeMillis();
-        while (running) {
-            long elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
-            System.out.println("Время с начала сессии: " + elapsedTime + " секунд");
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                running = false;
-            }
-        }
-    }
-
-    public void stopTimer() {
-        running = false;
-    }
-}
-
-class MessageThread extends Thread {
-    private volatile boolean running = true;
-
-    @Override
-    public void run() {
-        while (running) {
-            System.out.println("Сообщение каждые 5 секунд!");
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                running = false;
-            }
-        }
-    }
-
-    public void stopMessage() {
-        running = false;
-    }
-}
-
-class MessageThread7Sec extends Thread {
-    private volatile boolean running = true;
-
-    @Override
-    public void run() {
-        while (running) {
-            System.out.println("Сообщение каждые 7 секунд!");
-            try {
-                Thread.sleep(7000);
-            } catch (InterruptedException e) {
-                running = false;
-            }
-        }
-    }
-
-    public void stopMessage() {
-        running = false;
-    }
-}
- class TimeSessionApp {
-    public static void main(String[] args) {
-        TimerThread timer = new TimerThread();
-        MessageThread message5Sec = new MessageThread();
-        MessageThread7Sec message7Sec = new MessageThread7Sec();
-
-        timer.start();
-        message5Sec.start();
-        message7Sec.start();
-
+    public void run(){
+        int secondsPassed = 0;
         try {
-            Thread.sleep(20000);  // Даем этим потокам работать 20 секунд
+            while (true) {
+                secondsPassed++;
+                System.out.println("Прошло секунд: " + secondsPassed);
+                Thread.sleep(1000);
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+}
 
-        timer.stopTimer();
-        message5Sec.stopMessage();
-        message7Sec.stopMessage();
+class MessageEvery5SecondsTask implements Runnable {
+    @Override
+    public void run(){
+        try {
+            while (true){
+                Thread.sleep(5000);
+                System.out.println("Сообщение каждые 5 секунд.");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class MessageEvery7SecondsTask implements Runnable {
+    @Override
+    public void run(){
+        try {
+            while (true){
+                Thread.sleep(7000);
+                System.out.println("Сообщение каждые 7 секунд.");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class MultiThreadTimer {
+    public static void main(String[] args) {
+        TimerTask timerTask = new TimerTask();
+        MessageEvery5SecondsTask messageEvery5SecondsTask = new MessageEvery5SecondsTask();
+        MessageEvery7SecondsTask messageEvery7SecondsTask = new MessageEvery7SecondsTask();
+
+        Thread timerThread = new Thread(timerTask);
+        Thread messageEvery5SecondsThread = new Thread(messageEvery5SecondsTask);
+        Thread messageEvery7SecondsThread = new Thread(messageEvery7SecondsTask);
+        timerThread.start();
+        messageEvery5SecondsThread.start();
+        messageEvery7SecondsThread.start();
     }
 }
