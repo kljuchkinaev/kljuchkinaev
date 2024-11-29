@@ -1,3 +1,4 @@
+package lab1;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -15,6 +16,7 @@ class ProducerConsumer {
         while (true) {
             synchronized (this) {
                 while (buffer.size() == limit) {
+                    System.out.println("Производитель ждет, буфер заполнен...");
                     wait();
                 }
                 buffer.add(value);
@@ -30,6 +32,7 @@ class ProducerConsumer {
         while (true) {
             synchronized (this) {
                 while (buffer.isEmpty()) {
+                    System.out.println("Потребитель ждет, буфер пуст...");
                     wait();
                 }
                 int value = buffer.remove();
